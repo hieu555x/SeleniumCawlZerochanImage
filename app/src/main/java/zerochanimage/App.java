@@ -24,28 +24,35 @@ public class App {
     }
 
     public static void thucThi() throws IOException {
-        FindLink f = new FindLink();
+        String currentPath = System.getProperty("user.dir");
+        ExtractDataFile e = new ExtractDataFile(currentPath + "\\Input.txt");
+        String url = e.getUrl(), finalPath = e.getFinalPath();
+        finalPath = finalPath.replace("\\", "\\\\");
 
+        FindLink f = new FindLink();
         try {
 
             ArrayList<String> listLink = new ArrayList<>();
             f.Login();
-            int page = f.getPageIndex("https://www.zerochan.net/Kamisato+Ayaka?s=id");
+            int page = f.getPageIndex(url + "?s=id");
 
             for (int j = 0; j < page - 1; j++) {
                 System.out.println("Page " + (j + 1) + ": \n");
-                listLink = f.getAllImageLink("https://www.zerochan.net/Kamisato+Ayaka?s=id&p=" + (j + 1));
+                listLink = f.getAllImageLink(url + "?s=id&p=" + (j + 1));
                 DownloadImage d = new DownloadImage();
                 int i = 0;
                 for (String s : listLink) {
                     i++;
                     System.out.println(i + ". Link Process: " + s);
                     String fileName = s.split("/")[3];
-                    if (new checkExists().check("E:\\Picture\\MyWaifu\\", fileName)) {
+                    if (new checkExists().check(finalPath + "\\", fileName)) {
                         System.out.println("Exists: " + s);
                     } else {
                         String now = LocalDate.now().toString();
-                        File dateFolder = new File("E:\\Picture\\MyWaifu\\Cusion\\" + now);
+                        File dateFolder = new File(finalPath + "\\Cusion\\" + now);
+                        if (!(new File(finalPath + "\\Cusion").exists()) || !(new File(finalPath + "\\Cusion").isDirectory())) {
+                            new File(finalPath + "\\Cusion").mkdir();
+                        }
                         if (!dateFolder.exists() || !dateFolder.isDirectory()) {
                             dateFolder.mkdir();
                         }
