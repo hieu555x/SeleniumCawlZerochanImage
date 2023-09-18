@@ -25,8 +25,6 @@ public class LinkController {
             f.Login();
             int page = f.getPageIndex(url + "?s=id");
 
-            page = 4;
-
             for (int i = 0; i < page - 1; i++) {
                 listLinks = f.getAllImageLink(url + "?s=id&p=" + (i + 1));
                 for (String s : listLinks) {
